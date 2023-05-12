@@ -29,6 +29,10 @@ def _cal_SZA(times, lat, lon, alt):
     return pvlib.solarposition.get_solarposition(times, lat, lon, alt)
 
 
+Mair = 28.97e-3
+g = 9.80665
+N_A = 6.02214076e23
+
 # duration = [startdate, enddate) (enddate isn't included)
 startdate = str(sys.argv[1])
 enddate = str(sys.argv[2])
@@ -43,7 +47,7 @@ end_date = datetime.date(int(enddate[0:4]), int(
 # Group variables by MERRA2 GMI output file type.
 DACList = ['NO2', 'ALK4', 'C2H6', 'C3H8', 'PRPE', 'O3',
            'CH4', 'CO', 'H2O2', 'ISOP', 'ACET', 'CH2O', 'MP']
-MetList = ['QV', 'PL', 'T', 'H']
+MetList = ['QV', 'PL', 'T', 'H', 'aircol']
 AODList = ['AODUP', 'AODDWN']
 CloudList = ['CLOUD', 'TAUCLWUP', 'TAUCLIUP', 'TAUCLWDWN', 'TAUCLIDWN']
 NxList = ['GMISTRATO3']
@@ -55,7 +59,7 @@ InputAsIs = ['NO2', 'O3', 'CH4', 'CO', 'ISOP', 'ACET', 'C2H6', 'C3H8', 'PRPE', '
 # Variables that will be written to a netcdf file for input into the GBRT model.
 VarList = ['Lat', 'PL', 'T', 'NO2', 'O3', 'CH4', 'CO', 'ISOP', 'ACET', 'C2H6', 'C3H8', 'PRPE',
            'ALK4', 'MP', 'H2O2', 'TAUCLWDWN', 'TAUCLIDWN', 'TAUCLIUP', 'TAUCLWUP', 'CLOUD', 'QV',
-           'GMISTRATO3', 'ALBUV', 'AODUP', 'AODDWN', 'CH2O', 'SZA', 'OH', 'trop_mask']
+           'GMISTRATO3', 'ALBUV', 'AODUP', 'AODDWN', 'CH2O', 'SZA', 'OH', 'trop_mask', 'aircol']
 output = {}
 
 for single_date in _daterange(start_date, end_date):
@@ -150,7 +154,8 @@ for single_date in _daterange(start_date, end_date):
                     OpticalThickness[z:np.shape(OpticalThickness)[0]+1, :, :], axis=0)
             output[var] = OpticalThicknessDOWN
         if var == 'Lat':
-            output[var] = np.tile(np.tile(Lat, (np.size(Lon), 1)).T,(72,1,1))
+            output[var] = np.tile(
+                np.tile(Lat, (np.size(Lon), 1)).T, (72, 1, 1))
         if var == 'SZA':
             SZA = np.zeros((np.size(Lat), np.size(Lon)))
             for a in range(np.size(Lon)):
@@ -168,10 +173,14 @@ for single_date in _daterange(start_date, end_date):
             LER = LER[single_date.month-1, :, :].squeeze()
             sizePL = np.shape(LER)
             output[var] = LER
+        if var == 'aircol':
+            DELP = _read_nc(fname, 'DELP')
+            DELP = np.mean(DELP, axis=0).squeeze()
+            output[var] = DELP/g/Mair*N_A
         # this else deals with a lot of variables including temperature, CO, NO2, ...
         if var in InputAsIs:
             species = _read_nc(fname, var)
-            if np.ndim(species) == 4: # variables such as Qv, T need to be converted to daily
+            if np.ndim(species) == 4:  # variables such as Qv, T need to be converted to daily
                 species = np.nanmean(species, axis=0).squeeze()
             output[var] = species
 
