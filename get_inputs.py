@@ -53,7 +53,7 @@ CloudList = ['CLOUD', 'TAUCLWUP', 'TAUCLIUP', 'TAUCLWDWN', 'TAUCLIDWN']
 NxList = ['GMISTRATO3']
 InputList = ['NO2', 'O3', 'CH4', 'CO', 'ISOP', 'ACET', 'C2H6', 'C3H8', 'PRPE', 'ALK4',
              'MP', 'H2O2', 'PL', 'QV', 'T', 'Lat', 'CLOUD', 'TAUCLWUP', 'TAUCLIUP', 'TAUCLWDWN',
-             'TAUCLIDWN', 'ALBUV', 'GMISTRATO3', 'AODDWN', 'AODUP', 'CH2O', 'SZA']
+             'TAUCLIDWN', 'ALBUV', 'GMISTRATO3', 'AODDWN', 'AODUP', 'CH2O', 'SZA','aircol']
 InputAsIs = ['NO2', 'O3', 'CH4', 'CO', 'ISOP', 'ACET', 'C2H6', 'C3H8', 'PRPE', 'ALK4',
              'MP', 'H2O2', 'QV', 'T', 'CLOUD',  'CH2O']
 # Variables that will be written to a netcdf file for input into the GBRT model.

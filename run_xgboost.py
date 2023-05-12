@@ -61,13 +61,17 @@ for fname in input_files:
 
     # converting OH to tropospheric OH
     T = input["T"]
+    PL = input["PL"]
     CH4 = input["CH4"]
     aircol = _read_nc(fname, 'aircol')
     MCH4 = CH4*aircol/6.02214076e23/16.04e3  # kg of MCH4
     K_OH_CH4 = 1.85e-12*np.exp(-1690/T)
-    numerator_pred = np.sum(OH_pred*MCH4*K_OH_CH4, axis=0).squeeze()
+    N_A = 6.02214076e23
+    R = 8.314e4 # cm^3 mbar /K /mol
+    M = N_A*PL/R/T
+    numerator_pred = np.sum(M*OH_pred*MCH4*K_OH_CH4, axis=0).squeeze()
     denominator_pred = np.sum(MCH4*K_OH_CH4, axis=0).squeeze()
-    numerator_org = np.sum(OH_org*MCH4*K_OH_CH4, axis=0).squeeze()
+    numerator_org = np.sum(M*OH_org*MCH4*K_OH_CH4, axis=0).squeeze()
     denominator_pred = np.sum(MCH4*K_OH_CH4, axis=0).squeeze()
     OHtrop_org = numerator_org/denominator_pred
     OHtrop_pred = numerator_pred/denominator_pred
