@@ -23,9 +23,9 @@ def _cal_trop_OH(input, OH):
     PL = input["PL"]
     CH4 = input["CH4"]
     aircol = input["aircol"]
-    MCH4 = CH4*aircol/6.02214076e23*16.04e-3  # kg of MCH4
-    K_OH_CH4 = 1.85e-12*np.exp(-1690/T)
     N_A = 6.02214076e23
+    MCH4 = CH4*aircol/N_A*16.04e-3  # kg of MCH4
+    K_OH_CH4 = 1.85e-12*np.exp(-1690/T)
     R = 8.314e4  # cm^3 mbar /K /mol
     M = N_A*PL/R/T
     numerator = np.sum(M*OH*MCH4*K_OH_CH4, axis=0).squeeze()
