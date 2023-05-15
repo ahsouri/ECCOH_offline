@@ -116,7 +116,7 @@ for single_date in _daterange(start_date, end_date):
         # extracting vars one by one
         if var == 'GMISTRATO3':
             GMISTRATO3 = _read_nc(fname, 'GMITO3') - _read_nc(fname, 'GMITTO3')
-            output["GMISTRATO3"] = GMISTRATO3
+            output["GMISTRATO3"] = np.tile(GMISTRATO3, (72, 1, 1))
         if ((var == 'TAUCLIUP') or (var == 'TAUCLIDWN')):
             OpticalThickness = _read_nc(fname, 'TAUCLI')
             OpticalThickness = np.mean(OpticalThickness, axis=0).squeeze()
@@ -172,7 +172,7 @@ for single_date in _daterange(start_date, end_date):
             LER = _read_nc(fname, 'LER')
             LER = LER[single_date.month-1, :, :].squeeze()
             sizePL = np.shape(LER)
-            output[var] = LER
+            output[var] = np.tile(LER, (72, 1, 1))
         if var == 'aircol':
             DELP = _read_nc(fname, 'DELP')
             DELP = np.mean(DELP, axis=0).squeeze()
