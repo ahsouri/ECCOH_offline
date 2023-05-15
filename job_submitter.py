@@ -41,7 +41,7 @@ for single_date in _daterange(start_date, end_date):
     slurm_cmd += '#SBATCH --account=s1043 \n'
     slurm_cmd += '#SBATCH --ntasks=1 \n'
     slurm_cmd += '#SBATCH --cpus-per-task=1' + ' \n'
-    slurm_cmd += '#SBATCH --mem=20G \n'
+    slurm_cmd += '#SBATCH --mem=12G \n'
     if debug_on:
         slurm_cmd += '#SBATCH --qos=debug \n'
     else:

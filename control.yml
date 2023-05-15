@@ -2,7 +2,7 @@
 python_bin: '/discover/nobackup/asouri/miniconda3/bin/python3'
 
 # to run the job on debug queue
-debug: True
+debug: False
 
 # set the path of MERRA2-GMI folder (either relative or absolute) (don't add a / at the end)
 ctm_dir: '/css/merra2gmi/pub'
@@ -15,5 +15,5 @@ output_dir: './outputs/'
 
 # starting date (YYYY-MM-DD) and ending date (YYYY-MM-DD) (the end point won't be considered)
 # one job per day will be submitted so plan accordingly
-start_date: '2010-06-01'
-end_date:   '2010-06-02'
+start_date: '2010-01-01'
+end_date:   '2011-01-01'
