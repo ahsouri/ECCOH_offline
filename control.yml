@@ -8,10 +8,10 @@ debug: True
 ctm_dir: '/css/merra2gmi/pub'
 
 # variables to perturb
-var_perturb: ['NO2','CH2O','O3','Qv','GMISTRATO3']
+var_perturb: ['NO2','CH2O','O3','QV','GMISTRATO3','ISOP']
 
 # set the output path
-output_dir: '../outputs/'
+output_dir: './outputs/'
 
 # starting date (YYYY-MM-DD) and ending date (YYYY-MM-DD) (the end point won't be considered)
 # one job per day will be submitted so plan accordingly
