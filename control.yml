@@ -1,0 +1,19 @@
+# set your python executable path
+python_bin: '/home/asouri/anaconda3/bin/python3.9'
+
+# to run the job on debug queue
+debug: False
+
+# set the path of MERRA2-GMI folder (either relative or absolute)
+ctm_dir: 'download_bucket/gmi/'
+
+# variables to perturb
+var_perturb: ['NO2','CH2O','O3','Qv','GMISTRATO3']
+
+# set the output path
+output_dir: 'download_bucket/omi_no2'
+
+# starting date (YYYY-MM-DD) and ending date (YYYY-MM-DD) (the end point won't be considered)
+# one job per day will be submitted so plan accordingly
+start_date: '2010-06-01'
+end_date:   '2010-06-02'
