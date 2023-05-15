@@ -40,6 +40,7 @@ for single_date in _daterange(start_date, end_date):
     file = open('./jobs/' + 'job_' + str(single_date) + '.j', 'w')
     slurm_cmd = '#!/bin/bash \n'
     slurm_cmd += '#SBATCH -J eccoh_offline \n'
+    slurm_cmd += '#SBATCH --constraint="cssro&cas" \n'
     slurm_cmd += '#SBATCH --account=s1043 \n'
     slurm_cmd += '#SBATCH --ntasks=1 \n'
     slurm_cmd += '#SBATCH --cpus-per-task=1' + ' \n'

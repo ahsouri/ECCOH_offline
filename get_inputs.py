@@ -6,7 +6,6 @@ import datetime
 import pandas as pd
 import pvlib
 import os
-import sys
 
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
@@ -21,7 +20,7 @@ def _read_nc(filename, var):
 
 
 def _daterange(start_date, end_date):
-    for n in range(int((end_date - start_date).days)):
+    for n in range(int((end_date - start_date).days)+1):
         yield start_date + datetime.timedelta(n)
 
 
@@ -34,10 +33,6 @@ def get_eccoh_inputs(startdate, enddate, merra2_dir, output_folder='./inputs/'):
     Mair = 28.97e-3
     g = 9.80665
     N_A = 6.02214076e23
-
-    # duration = [startdate, enddate) (enddate isn't included)
-    startdate = str(sys.argv[1])
-    enddate = str(sys.argv[2])
 
     start_date = datetime.date(int(startdate[0:4]), int(
        startdate[5:7]), int(startdate[8:10]))
@@ -62,10 +57,11 @@ def get_eccoh_inputs(startdate, enddate, merra2_dir, output_folder='./inputs/'):
            'GMISTRATO3', 'ALBUV', 'AODUP', 'AODDWN', 'CH2O', 'SZA', 'OH', 'trop_mask', 'aircol']
     output = {}
 
-    for single_date in _daterange(start_date, end_date+1):
+    for single_date in _daterange(start_date, end_date):
         print("Extracting variables for: " + str(single_date))
         merra2_dir = merra2_dir + '/Y' + \
            str(single_date.year) + '/M' + f"{single_date.month:02}" + '/'
+        merra2_dir = str(merra2_dir)
         # building the tropospheric mask
         TROPPB = _read_nc(merra2_dir + 'MERRA2_GMI.tavg24_2d_dad_Nx.' + str(single_date.year) +
                       f"{single_date.month:02}" + f"{single_date.day:02}" + '.nc4', 'TROPPB')
