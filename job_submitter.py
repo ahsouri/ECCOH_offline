@@ -26,9 +26,6 @@ start_date = datetime.date(int(startdate[0:4]), int(
     startdate[5:7]),int(startdate[8:10]))
 end_date = datetime.date(int(enddate[0:4]), int(
     enddate[5:7]),int(startdate[8:10]))
-list_months = []
-list_years = []
-
 
 # submit jobs per month per year (12 jobs per year)
 if not os.path.exists('./jobs'):
