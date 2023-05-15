@@ -92,13 +92,13 @@ def run_eccoh(var_perturb: list, pertubation: float, output_folder: str):
         if var_perturb:
             if pertubation > 1.0:
                 output_file = 'MERRA2_GMI_XGBOOST_output_' + \
-                    var_perturb + '_up_' + fname.split('_')[-1]
+                    str(var_perturb) + '_up_' + fname.split('_')[-1]
             else:
                 output_file = 'MERRA2_GMI_XGBOOST_output_' + \
-                    var_perturb + '_down_' + fname.split('_')[-1]
+                    str(var_perturb) + '_down_' + fname.split('_')[-1]
         else:
             output_file = 'MERRA2_GMI_XGBOOST_org_' + \
-                    var_perturb + '_up_' + fname.split('_')[-1]     
+                     '_org_' + fname.split('_')[-1]
         ncfile = Dataset(output_folder + '/' + output_file, 'w')
         # create the x and y dimensions.
         ncfile.createDimension('x', np.shape(input["PL"])[1])
