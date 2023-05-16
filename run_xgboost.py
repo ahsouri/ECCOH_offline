@@ -33,9 +33,8 @@ def _cal_trop_OH(input, OH):
     return 1e6*numerator/denominator
 
 
-def run_eccoh(var_perturb: list, pertubation: float, output_folder: str):
-    input_folder = './inputs/'
-    input_files = sorted(glob.glob(input_folder + '/*.nc'))
+def run_eccoh(date:str,var_perturb: list, pertubation: float, output_folder: str):
+    input_files = ['./inputs/MERRA2_GMI_XGBOOST_Inputs_' + date[0:4] + date[5:7] + date[8:10] + '.nc']
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
