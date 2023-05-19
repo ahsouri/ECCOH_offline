@@ -8,7 +8,7 @@ debug: False
 ctm_dir: '/css/merra2gmi/pub'
 
 # variables to perturb
-var_perturb: ['NO2','CH2O','O3','QV','GMISTRATO3','ISOP']
+var_perturb: ['NO2','QV','O3','GMISTRATO3','ISOP','CH2O','VOC']
 
 # set the output path
 output_dir: '/discover/nobackup/asouri/PROJECTS/ECCOH/offline_ECCOH/ECCOH_offline/outputs/'

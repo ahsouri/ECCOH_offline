@@ -30,7 +30,7 @@ def _cal_trop_OH(input, OH):
     M = N_A*PL/R/T
     numerator = np.sum(M*OH*MCH4*K_OH_CH4, axis=0).squeeze()
     denominator = np.sum(MCH4*K_OH_CH4, axis=0).squeeze()
-    return 1e6*numerator/denominator
+    return numerator/denominator
 
 
 def run_eccoh(date:str,var_perturb: list, pertubation: float, output_folder: str):
@@ -52,7 +52,12 @@ def run_eccoh(date:str,var_perturb: list, pertubation: float, output_folder: str
 
         # perturb the target variable
         if var_perturb:
-            input[var_perturb] = input[var_perturb]*pertubation
+            if var_perturb == 'VOC': # a group of compounds
+               VOCs=['ISOP', 'ACET', 'C2H6', 'C3H8', 'PRPE','ALK4', 'CH2O', 'CH4']
+               for voc in VOCs:
+                   input[voc] = input[voc]*pertubation
+            else:
+               input[var_perturb] = input[var_perturb]*pertubation
         print("Reading Completed")
         mask_trop = input["trop_mask"]
         indices_legit = np.argwhere(mask_trop == 1.0)
