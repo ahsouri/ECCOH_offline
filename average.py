@@ -44,7 +44,6 @@ for single_date in _daterange(start_date, end_date):
     list_years.append(single_date.year)
 
 output = {}
-
 var_perturb.append('org')
 
 for var in var_perturb:
@@ -53,12 +52,18 @@ for var in var_perturb:
                   np.max(list_months)+1)),
         len(range(np.min(list_years), np.max(list_years)+1))))
     sens = np.zeros_like(OH_pred)
+    sens_full = np.zeros((361,576,
+        len(range(np.min(list_months),
+                  np.max(list_months)+1)),
+        len(range(np.min(list_years), np.max(list_years)+1))))
     for year in range(np.min(list_years), np.max(list_years)+1):
         for month in range(np.min(list_months), np.max(list_months)+1):
             files = sorted(glob.glob(output_dir + '/*' + '_' + str(var) +'_' + '*' + str(year) + f"{month:02}" + '*'))
             OH_pred_chosen = []
             sens_up_chosen = []
             sens_down_chosen = []
+            sens_full_up_chosen = []
+            sens_full_down_chosen = []
             for f in files:
                 if var == 'org':
                    print(f)
@@ -67,9 +72,11 @@ for var in var_perturb:
                    if "_up_" in f:
                        print(f)
                        sens_up_chosen.append(_read_nc(f,'OH_pred'))
+                       sens_full_up_chosen.append(_read_nc(f,'OH_pred_full'))
                    elif "_down_" in f:
                        print(f)
                        sens_down_chosen.append(_read_nc(f,'OH_pred'))
+                       sens_full_down_chosen.append(_read_nc(f,'OH_pred_full'))
             if var == 'org':
                OH_pred_chosen = np.mean(np.array(OH_pred_chosen),axis=0)
                OH_pred[:,:,month - min(list_months), year - min(
@@ -77,11 +84,16 @@ for var in var_perturb:
             else:
                sens_up_chosen = np.mean(np.array(sens_up_chosen),axis=0)
                sens_down_chosen = np.mean(np.array(sens_down_chosen),axis=0)
+               sens_full_up_chosen = np.mean(np.array(sens_full_up_chosen),axis=0)
+               sens_full_down_chosen = np.mean(np.array(sens_full_down_chosen),axis=0)
                sens[:,:,month - min(list_months), year - min(
                    list_years)] = (sens_up_chosen-sens_down_chosen)/0.20
+               sens_full[:,:,month - min(list_months), year - min(
+                   list_years)] = (sens_full_up_chosen[-1,:,:].squeeze()-sens_full_down_chosen[-1,:,:].squeeze())/0.20
     if var == 'org':
        output[str(var) + '_OH'] = OH_pred
     else:
        output[str(var) + '_OH'] = sens
+       output[str(var) + '_full_OH'] = sens_full
 
-savemat("OH_sens_2010.mat", output)
+savemat("OH_sens_2012.mat", output)

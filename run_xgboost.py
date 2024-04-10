@@ -30,7 +30,7 @@ def _cal_trop_OH(input, OH):
     M = N_A*PL/R/T
     numerator = np.sum(M*OH*MCH4*K_OH_CH4, axis=0).squeeze()
     denominator = np.sum(MCH4*K_OH_CH4, axis=0).squeeze()
-    return numerator/denominator
+    return numerator/denominator,OH
 
 
 def run_eccoh(date:str,var_perturb: list, pertubation: float, output_folder: str):
@@ -42,7 +42,6 @@ def run_eccoh(date:str,var_perturb: list, pertubation: float, output_folder: str
     VarList = ['Lat', 'PL', 'T', 'NO2', 'O3', 'CH4', 'CO', 'ISOP', 'ACET', 'C2H6', 'C3H8', 'PRPE',
                'ALK4', 'MP', 'H2O2', 'TAUCLWDWN', 'TAUCLIDWN', 'TAUCLIUP', 'TAUCLWUP', 'CLOUD', 'QV',
                'GMISTRATO3', 'ALBUV', 'AODUP', 'AODDWN', 'CH2O', 'SZA', 'OH', 'trop_mask', 'aircol']
-
     input = {}
 
     for fname in input_files:
@@ -68,12 +67,13 @@ def run_eccoh(date:str,var_perturb: list, pertubation: float, output_folder: str
             temp_var = input[var]*mask_trop
             xgb_input[:, counter] = temp_var[~np.isnan(temp_var)]
             counter += 1
-            if counter == 27:
+            if counter == len(VarList)-3: #27:
                 break
         print("OH prediction begins")
         # predict OH
         month = (fname.split('_')[-1])[4:6]
         FileModifier = 'UpDwnALBUVSZAAll_NoGMIALB_NoScale_NoRegressor_NewXGB_M' + month
+        #FileModifier = 'UpDwnALBUVSZAAll_NoGMIALB_NoScale_NoRegressor_NewXGB_CH4ImportanceTest_M09'
         modelname = '/discover/nobackup/dcanders/QuickChem/Data/RTModels/' + \
             'xgboh_' + FileModifier + '.model'
         bst = xgb.Booster({'nthread': 4})
@@ -89,8 +89,8 @@ def run_eccoh(date:str,var_perturb: list, pertubation: float, output_folder: str
                     indices_legit[i, 2]] = Ypred[i]
 
         # converting OH to tropospheric OH
-        OHtrop_org = _cal_trop_OH(input, OH_org)
-        OHtrop_pred = _cal_trop_OH(input, OH_pred)
+        OHtrop_org,OHfull_org = _cal_trop_OH(input, OH_org)
+        OHtrop_pred,OHfull_pred = _cal_trop_OH(input, OH_pred)
 
         # writing to a ncfile
         if var_perturb:
@@ -106,13 +106,22 @@ def run_eccoh(date:str,var_perturb: list, pertubation: float, output_folder: str
         # create the x and y dimensions.
         ncfile.createDimension('x', np.shape(input["PL"])[1])
         ncfile.createDimension('y', np.shape(input["PL"])[2])
+        ncfile.createDimension('z', np.shape(input["PL"])[0])
 
         data_nc = ncfile.createVariable(
             'OH_org', np.dtype('float32').char, ('x', 'y'))
         data_nc[:, :] = OHtrop_org
 
         data_nc = ncfile.createVariable(
+        'OH_org_full', np.dtype('float32').char, ('z','x','y'))
+        data_nc[:, :, :] = OHfull_org
+
+        data_nc = ncfile.createVariable(
             'OH_pred', np.dtype('float32').char, ('x', 'y'))
         data_nc[:, :] = OHtrop_pred
+
+        data_nc = ncfile.createVariable(
+        'OH_pred_full', np.dtype('float32').char, ('z','x','y'))
+        data_nc[:, :, :] = OHfull_pred
 
         ncfile.close()

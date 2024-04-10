@@ -25,5 +25,5 @@ else:
 run_eccoh(date,[],[],output_dir)
 # running eccoh with +-10 perturbation
 for var in var_perturb:
-    run_eccoh(date,var,1.1,output_dir)
-    run_eccoh(date,var,0.9,output_dir)
+    run_eccoh(date,var,1.10,output_dir)
+    run_eccoh(date,var,0.90,output_dir)
